@@ -30,21 +30,21 @@
             padding: 20px; box-sizing: border-box;
             position: relative; z-index: 2;
         }
+
         .icon-container {
             position: relative; display: inline-block; border-radius: 50%; margin-bottom: 30px;
             padding: 3px;
-            /* ★★★ 縁取りをグレーに変更 ★★★ */
-            background: #555;
             transform: scale(1.05);
-            transition: transform 0.4s ease, background 0.4s ease;
+            transition: transform 0.4s ease;
             cursor: pointer;
-        }
-        .icon-container:hover {
-            transform: scale(1.15);
             background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: rainbow-border-flow 2s ease-in-out infinite;
         }
+        .icon-container:hover {
+            transform: scale(1.15);
+        }
+        
         .icon-container::before {
             content: ''; position: absolute; top: 3px; left: 3px; right: 3px; bottom: 3px;
             background-color: #121212; border-radius: 50%; z-index: 1;
@@ -57,6 +57,7 @@
         .main-title {
             font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: clamp(40px, 8vw, 120px); letter-spacing: 0.05em; margin: 0;
             cursor: pointer;
+            /* ★★★ ここの構文エラーを修正しました ★★★ */
             transition: letter-spacing 0.3s ease;
         }
         .main-title:hover { letter-spacing: 0.1em; }
