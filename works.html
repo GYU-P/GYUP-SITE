@@ -128,7 +128,7 @@
         <section class="works-section">
             <h3>提供曲</h3>
             <div class="works-list" id="provided-songs-list">
-                <!-- テキストファイルから読み込まれます -->
+                 <p style="color: #888;">作品リストを読み込み中...</p>
             </div>
         </section>
          <section class="works-section">
@@ -170,23 +170,24 @@
         }
         animateParticles();
 
-        // テキストファイル読み込み
-        async function loadWorksList() {
+        // ★★★ テキストファイルを読み込むJavaScriptを修正 ★★★
+        async function loadTextFile(url, elementId) {
             try {
-                const response = await fetch('works-list.txt');
-                if (!response.ok) throw new Error('works-list.txt が見つかりません。');
+                const response = await fetch(url);
+                if (!response.ok) { throw new Error(`${url} が見つかりません。`); }
                 const text = await response.text();
-                const parts = text.split('-----');
-                const originalSongs = parts[0] ? parts[0].trim() : '（オリジナル曲はありません）';
-                const providedSongs = parts[1] ? parts[1].trim() : '（提供曲はありません）';
-                document.getElementById('original-songs-list').textContent = originalSongs;
-                document.getElementById('provided-songs-list').textContent = providedSongs;
+                document.getElementById(elementId).textContent = text.trim();
             } catch (error) {
                 console.error(error);
-                document.getElementById('original-songs-list').textContent = '作品リストの読み込みに失敗しました。';
+                document.getElementById(elementId).textContent = '作品リストの読み込みに失敗しました。';
             }
         }
-        document.addEventListener('DOMContentLoaded', loadWorksList);
+        
+        // ページが読み込まれたら両方のファイルを読み込む
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTextFile('original-songs.txt', 'original-songs-list');
+            loadTextFile('provided-songs.txt', 'provided-songs-list');
+        });
 
         // YouTube API連携
         async function fetchYouTubePlaylist() {
@@ -219,7 +220,7 @@
                 playlistContainer.innerHTML = html;
             } catch (error) {
                 console.error('YouTube API Error:', error);
-                playlistContainer.innerHTML = '<p>動画の読み込みに失敗しました。APIキーの制限などを確認してください。</p>';
+                playlistContainer.innerHTML = '<p>動画の読み込みに失敗しました。</p>';
             }
         }
         fetchYouTubePlaylist();
