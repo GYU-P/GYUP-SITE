@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GYU-P Official</title>
+    <link rel="icon" href="新アイコン背景なし.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes rainbow-border-flow {
+            0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }
+        }
+        body {
+            background-color: #121212;
+            color: #EAEAEA;
+            font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        #particle-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+        }
+        .hero {
+            height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            padding: 20px; box-sizing: border-box;
+            position: relative; z-index: 2;
+        }
+        .icon-container {
+            position: relative; display: inline-block; border-radius: 50%; margin-bottom: 30px;
+            padding: 3px;
+            /* ★★★ 縁取りをグレーに変更 ★★★ */
+            background: #555;
+            transform: scale(1.05);
+            transition: transform 0.4s ease, background 0.4s ease;
+            cursor: pointer;
+        }
+        .icon-container:hover {
+            transform: scale(1.15);
+            background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: rainbow-border-flow 2s ease-in-out infinite;
+        }
+        .icon-container::before {
+            content: ''; position: absolute; top: 3px; left: 3px; right: 3px; bottom: 3px;
+            background-color: #121212; border-radius: 50%; z-index: 1;
+        }
+        .artist-icon {
+            position: relative; z-index: 2; display: block;
+            width: clamp(100px, 20vw, 150px); height: clamp(100px, 20vw, 150px);
+            border-radius: 50%; object-fit: cover;
+        }
+        .main-title {
+            font-family: 'Montserrat', sans-serif; font-weight: 300; font-size: clamp(40px, 8vw, 120px); letter-spacing: 0.05em; margin: 0;
+            cursor: pointer;
+            transition: letter-spacing 0.3s ease;
+        }
+        .main-title:hover { letter-spacing: 0.1em; }
+        .subtitle {
+            font-family: 'Noto Sans JP', sans-serif; font-weight: 300; font-size: clamp(16px, 2.5vw, 24px); margin: 10px 0 30px 0; color: #A0A0A0;
+        }
+        .sns-links a {
+            color: #A0A0A0; font-size: 24px; margin: 0 15px; transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .sns-links a:hover { color: #FFFFFF; transform: scale(1.1); }
+        .page-nav {
+            position: fixed;
+            bottom: 5vh; left: 0; width: 100%;
+            text-align: center; z-index: 3;
+        }
+        .page-nav a {
+            font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 16px; color: #888888;
+            text-decoration: none; margin: 0 25px;
+            letter-spacing: 0.1em;
+            transition: color 0.4s ease, letter-spacing 0.4s ease;
+            cursor: pointer;
+        }
+        .page-nav a:hover { color: #FFFFFF; letter-spacing: 0.2em; }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="hero">
+        <a href="profile.html" class="icon-container">
+            <img src="新アイコン背景なし.png" alt="アーティストアイコン" class="artist-icon">
+        </a>
+        <a href="works.html" style="text-decoration: none; color: inherit;">
+            <h1 class="main-title">GYU P</h1>
+        </a>
+        <p class="subtitle">Vocaloid Producer / Composer</p>
+        <div class="sns-links">
+            <a href="https://twitter.com/GYUP_bokaroP" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.youtube.com/@gyup_bokaroP" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+    </div>
+    <nav class="page-nav">
+        <a href="works.html">WORKS</a>
+        <a href="profile.html">PROFILE</a>
+    </nav>
+    <script>
+        // カーソルアニメーション
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let points = [], hue = 0, isMoving = false, stopTimer;
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+        document.body.addEventListener('mousemove', (event) => {
+            isMoving = true; points.push({ x: event.clientX, y: event.clientY });
+            clearTimeout(stopTimer); stopTimer = setTimeout(() => { isMoving = false; }, 50);
+        });
+        function animateParticles() {
+            ctx.fillStyle = 'rgba(18, 18, 18, 0.3)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if (!isMoving && points.length > 0) { points.shift(); }
+            if (points.length > 10) { points.shift(); }
+            if (points.length > 1) {
+                ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) { ctx.lineTo(points[i].x, points[i].y); }
+                const gradient = ctx.createLinearGradient(points[0].x, points[0].y, points[points.length - 1].x, points[points.length - 1].y);
+                gradient.addColorStop(0, `hsla(${hue}, 100%, 70%, 0)`);
+                gradient.addColorStop(1, `hsla(${hue + 60}, 100%, 70%, 1)`);
+                ctx.strokeStyle = gradient; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
+            }
+            hue += 1; requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
+</body>
+</html>

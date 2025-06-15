@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WORKS | GYU-P Official</title>
+    <link rel="icon" href="新アイコン背景なし.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes rainbow-border-flow {
+            0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; }
+        }
+        body {
+            background-color: #121212; color: #EAEAEA;
+            font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
+            margin: 0;
+            cursor: crosshair;
+        }
+        #particle-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
+        }
+        .page-header {
+            position: fixed; top: 25px; left: 30px; z-index: 10;
+        }
+        .page-header .icon-container {
+            position: relative; display: inline-block; border-radius: 50%;
+            padding: 2px; background: #555; transform: scale(1);
+            transition: transform 0.4s ease, background 0.4s ease; cursor: pointer;
+        }
+        .page-header .icon-container:hover {
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: rainbow-border-flow 2s ease-in-out infinite;
+        }
+        .page-header .icon-container::before {
+            content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px;
+            background-color: #121212; border-radius: 50%; z-index: 1;
+        }
+        .page-header .artist-icon {
+            position: relative; z-index: 2; display: block;
+            width: 45px; height: 45px;
+            border-radius: 50%; object-fit: cover;
+        }
+        .content-wrapper {
+            padding: 120px 40px 150px 40px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .page-title {
+            font-size: clamp(36px, 6vw, 54px);
+            font-weight: 300; text-align: center;
+            letter-spacing: 0.05em; margin-bottom: 60px;
+        }
+        .works-section { margin-bottom: 60px; }
+        .works-section h3 {
+            font-size: 22px; font-weight: 400; letter-spacing: 0.08em;
+            padding-bottom: 15px; border-bottom: 1px solid #333; margin-bottom: 30px;
+        }
+        .works-list {
+            color: #FFFFFF; line-height: 2.2; padding-left: 20px;
+            white-space: pre-wrap;
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .video-card {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            text-decoration: none;
+            color: #EAEAEA;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .video-thumbnail-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            background-color: #000;
+        }
+        .video-thumbnail {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+        }
+        .video-title {
+            font-size: 15px;
+            font-weight: 400; padding: 15px;
+            line-height: 1.5;
+        }
+        #playlist-main p { color: #888; text-align: center; }
+        .page-footer {
+            text-align: center; padding: 40px; border-top: 1px solid #222;
+        }
+        .page-footer a {
+            font-family: 'Montserrat', sans-serif; font-weight: 400; font-size: 14px;
+            color: #888888; text-decoration: none; margin: 0 20px;
+            letter-spacing: 0.1em; transition: color 0.4s ease, letter-spacing 0.4s ease;
+        }
+        .page-footer a:hover { color: #FFFFFF; letter-spacing: 0.2em; }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <header class="page-header">
+        <a href="index.html" class="icon-container">
+            <img src="新アイコン背景なし.png" alt="HOME" class="artist-icon">
+        </a>
+    </header>
+
+    <main class="content-wrapper">
+        <h1 class="page-title">WORKS</h1>
+        <section class="works-section">
+            <h3>オリジナル曲</h3>
+            <div class="works-list" id="original-songs-list">
+                <p style="color: #888;">作品リストを読み込み中...</p>
+            </div>
+        </section>
+        <section class="works-section">
+            <h3>提供曲</h3>
+            <div class="works-list" id="provided-songs-list">
+                <!-- テキストファイルから読み込まれます -->
+            </div>
+        </section>
+         <section class="works-section">
+            <h3>視聴</h3>
+            <div id="playlist-main">
+                <p>動画を読み込み中...</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="page-footer">
+        <a href="index.html">HOME</a>
+        <a href="profile.html">PROFILE</a>
+    </footer>
+    <script>
+        // カーソルアニメーション
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let points = [], hue = 0, isMoving = false, stopTimer;
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+        document.body.addEventListener('mousemove', (event) => {
+            isMoving = true; points.push({ x: event.clientX, y: event.clientY });
+            clearTimeout(stopTimer); stopTimer = setTimeout(() => { isMoving = false; }, 50);
+        });
+        function animateParticles() {
+            ctx.fillStyle = 'rgba(18, 18, 18, 0.3)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if (!isMoving && points.length > 0) { points.shift(); }
+            if (points.length > 10) { points.shift(); }
+            if (points.length > 1) {
+                ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) { ctx.lineTo(points[i].x, points[i].y); }
+                const gradient = ctx.createLinearGradient(points[0].x, points[0].y, points[points.length - 1].x, points[points.length - 1].y);
+                gradient.addColorStop(0, `hsla(${hue}, 100%, 70%, 0)`);
+                gradient.addColorStop(1, `hsla(${hue + 60}, 100%, 70%, 1)`);
+                ctx.strokeStyle = gradient; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
+            }
+            hue += 1; requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // テキストファイル読み込み
+        async function loadWorksList() {
+            try {
+                const response = await fetch('works-list.txt');
+                if (!response.ok) throw new Error('works-list.txt が見つかりません。');
+                const text = await response.text();
+                const parts = text.split('-----');
+                const originalSongs = parts[0] ? parts[0].trim() : '（オリジナル曲はありません）';
+                const providedSongs = parts[1] ? parts[1].trim() : '（提供曲はありません）';
+                document.getElementById('original-songs-list').textContent = originalSongs;
+                document.getElementById('provided-songs-list').textContent = providedSongs;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('original-songs-list').textContent = '作品リストの読み込みに失敗しました。';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadWorksList);
+
+        // YouTube API連携
+        async function fetchYouTubePlaylist() {
+            const API_KEY = 'AIzaSyCfOinBm1pP3VgIhxY65EoT_v-WVXThK1k';
+            const PLAYLIST_ID = 'PL21xeg-oKROEWOp5GCET7228xD_6iEEQ0';
+            const playlistContainer = document.getElementById('playlist-main');
+            try {
+                const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${PLAYLIST_ID}&key=${API_KEY}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.error) throw new Error(`API Error: ${data.error.message}`);
+                let html = '<div class="video-grid">';
+                data.items.forEach(item => {
+                    const snippet = item.snippet;
+                    if(snippet.thumbnails && snippet.thumbnails.medium) {
+                        const videoId = snippet.resourceId.videoId;
+                        const title = snippet.title;
+                        const thumbnailUrl = snippet.thumbnails.medium.url;
+                        html += `
+                            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer" class="video-card">
+                                <div class="video-thumbnail-container">
+                                    <img src="${thumbnailUrl}" alt="${title}" class="video-thumbnail">
+                                </div>
+                                <div class="video-title">${title}</div>
+                            </a>
+                        `;
+                    }
+                });
+                html += '</div>';
+                playlistContainer.innerHTML = html;
+            } catch (error) {
+                console.error('YouTube API Error:', error);
+                playlistContainer.innerHTML = '<p>動画の読み込みに失敗しました。APIキーの制限などを確認してください。</p>';
+            }
+        }
+        fetchYouTubePlaylist();
+    </script>
+</body>
+</html>
