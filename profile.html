@@ -18,6 +18,8 @@
             font-family: 'Montserrat', 'Noto Sans JP', sans-serif;
             margin: 0;
             cursor: crosshair;
+            /* ★★★ スクロールを無効化 ★★★ */
+            overflow: hidden;
         }
         #particle-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
@@ -46,8 +48,13 @@
             border-radius: 50%; object-fit: cover;
         }
         .content-wrapper {
-            /* ★★★ 上下の余白を調整 ★★★ */
-            padding: 60px 40px 120px;
+            /* ★★★ 画面全体に広げ、中身を中央に配置するよう修正 ★★★ */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 40px; /* 上下の余白 */
             max-width: 960px;
             margin: 0 auto;
             box-sizing: border-box;
@@ -55,12 +62,14 @@
         .page-title {
             font-size: clamp(36px, 6vw, 54px);
             font-weight: 300; text-align: center;
-            letter-spacing: 0.05em; margin-bottom: 5px;
+            letter-spacing: 0.05em;
+            margin: 0 0 0px 0; /* 下部の余白を調整 */
         }
         .profile-content {
             display: flex; flex-wrap: wrap;
             gap: 40px; align-items: center;
             justify-content: center;
+            width: 100%;
         }
         
         /* ★★★ アイコンの縁取り表示を修正 ★★★ */
@@ -75,7 +84,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow: hidden; /* 画像を円形に切り抜く */
         }
         .profile-image {
             width: 100%;
@@ -92,7 +101,7 @@
         }
         .profile-text-container p {
             color: #FFFFFF;
-            line-height: 2.2;
+            line-height: 2.0;
         }
         .contact-info { margin-top: 40px; }
         .contact-info a { color: #EAEAEA; text-decoration: none; transition: color 0.3s; }
@@ -104,8 +113,7 @@
             width: 100%;
             text-align: center; 
             padding: 25px 0;
-            background-color: #121212; /* 背景との境界を明確に */
-            /* ★★★ フッターの上に区切り線を追加 ★★★ */
+            background-color: #121212;
             border-top: 1px solid #333;
         }
         .page-footer a {
@@ -133,7 +141,7 @@
             <div class="profile-text-container">
                 <h3>GYU P</h3>
                 <p>
-                    2006年生まれ<br>                    
+                    2006年生まれ<br>
                     オリジナル楽曲の投稿および楽曲提供など<br>
                     生楽器を使った楽曲、ノリノリな楽曲、かわいい楽曲の制作が得意です(詳細はWORKSをご覧ください)<br>
                     音楽制作に関するご依頼、お待ちしております！

@@ -61,7 +61,10 @@
             padding-bottom: 15px; border-bottom: 1px solid #333; margin-bottom: 30px;
         }
         .works-list {
-            color: #FFFFFF; line-height: 2.2; padding-left: 20px;
+            color: #FFFFFF;
+            /* ★★★ 行間を小さく修正 ★★★ */
+            line-height: 1.8;
+            padding-left: 20px;
             white-space: pre-wrap;
         }
         .video-grid {
@@ -170,7 +173,7 @@
         }
         animateParticles();
 
-        // ★★★ テキストファイルを読み込むJavaScriptを修正 ★★★
+        // テキストファイル読み込み
         async function loadTextFile(url, elementId) {
             try {
                 const response = await fetch(url);
@@ -183,7 +186,6 @@
             }
         }
         
-        // ページが読み込まれたら両方のファイルを読み込む
         document.addEventListener('DOMContentLoaded', () => {
             loadTextFile('original-songs.txt', 'original-songs-list');
             loadTextFile('provided-songs.txt', 'provided-songs-list');
