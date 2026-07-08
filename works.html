@@ -193,7 +193,8 @@
 
         // YouTube再生リスト連携
         // playlist.json は .github/workflows/update-playlist.yml が毎日自動生成する
-        // 静的ファイルです（APIキー不要・ブラウザからYouTube APIを直接叩きません）。
+        // 静的ファイルです。APIキーはGitHub Actions内にのみ保存され、
+        // ブラウザからYouTube APIを直接叩くことはありません。
         function escapeHtml(str) {
             const div = document.createElement('div');
             div.textContent = str;
