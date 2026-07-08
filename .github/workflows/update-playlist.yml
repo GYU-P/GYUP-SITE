@@ -24,10 +24,9 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install yt-dlp
-        run: pip install -U yt-dlp
-
       - name: Update playlist.json
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python scripts/update_playlist.py
 
       - name: Commit changes if any
