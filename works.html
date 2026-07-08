@@ -191,37 +191,37 @@
             loadTextFile('provided-songs.txt', 'provided-songs-list');
         });
 
-        // YouTube API連携
+        // YouTube再生リスト連携
+        // playlist.json は .github/workflows/update-playlist.yml が毎日自動生成する
+        // 静的ファイルです（APIキー不要・ブラウザからYouTube APIを直接叩きません）。
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
         async function fetchYouTubePlaylist() {
-            const API_KEY = 'AIzaSyCfOinBm1pP3VgIhxY65EoT_v-WVXThK1k';
-            const PLAYLIST_ID = 'PL21xeg-oKROEWOp5GCET7228xD_6iEEQ0';
             const playlistContainer = document.getElementById('playlist-main');
             try {
-                const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${PLAYLIST_ID}&key=${API_KEY}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.error) throw new Error(`API Error: ${data.error.message}`);
+                const response = await fetch('playlist.json', { cache: 'no-store' });
+                if (!response.ok) throw new Error('playlist.json の取得に失敗しました。');
+                const videos = await response.json();
                 let html = '<div class="video-grid">';
-                data.items.forEach(item => {
-                    const snippet = item.snippet;
-                    if(snippet.thumbnails && snippet.thumbnails.medium) {
-                        const videoId = snippet.resourceId.videoId;
-                        const title = snippet.title;
-                        const thumbnailUrl = snippet.thumbnails.medium.url;
-                        html += `
-                            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer" class="video-card">
-                                <div class="video-thumbnail-container">
-                                    <img src="${thumbnailUrl}" alt="${title}" class="video-thumbnail">
-                                </div>
-                                <div class="video-title">${title}</div>
-                            </a>
-                        `;
-                    }
+                videos.forEach(video => {
+                    const title = escapeHtml(video.title);
+                    html += `
+                        <a href="https://www.youtube.com/watch?v=${video.videoId}" target="_blank" rel="noopener noreferrer" class="video-card">
+                            <div class="video-thumbnail-container">
+                                <img src="${video.thumbnail}" alt="${title}" class="video-thumbnail" loading="lazy">
+                            </div>
+                            <div class="video-title">${title}</div>
+                        </a>
+                    `;
                 });
                 html += '</div>';
                 playlistContainer.innerHTML = html;
             } catch (error) {
-                console.error('YouTube API Error:', error);
+                console.error('YouTube playlist load error:', error);
                 playlistContainer.innerHTML = '<p>動画の読み込みに失敗しました。</p>';
             }
         }
